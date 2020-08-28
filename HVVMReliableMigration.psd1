@@ -5,7 +5,7 @@
     Author             = 'Kirill Nikolaev'
     CompanyName        = 'Fozzy Inc.'
     Copyright          = '(c) 2020 Fozzy Inc. All rights reserved.'
-    PowerShellVersion  = '3.0'
+    PowerShellVersion  = '5.1'
     Description        = 'Solves 2 problems which you most certainly bump into, when migrating VMs in a shared-nothing Hyper-V environment.'
     RequiredModules    = @(
         'Hyper-V'
