@@ -1,11 +1,13 @@
 # HVVMReliableMigration
 
-This module solves two problems which apply to VM migrations in a shared-nothing Hyper-V infrastructure (Azure-like):
+This module solves three problems which apply to VM migrations in a shared-nothing Hyper-V infrastructure (Azure-like):
 
 1. Live-migration limit.
     When you try to live-migrate a number of VMs which exceeds the hosts' live-migration limit, you have to manually watch running migration jobs and queue new ones as soon as a migration slot becomes available. This module automatically watches available migration slots and queues machines for migration.
 
 2. It is impossible to migrate a machine which is currently backing up. The module relieves you from the burden of waiting and waits and retries migrations for you.
+
+3. Migrated VMs leave clutter of folders at the source server. This module cleans them up.
 
 The module works around those problems by introducing additional checks and correction actions to the migration process. Also, if something happens during a migration, it retries again, several times.
 
