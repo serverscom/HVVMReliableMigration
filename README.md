@@ -11,10 +11,25 @@ This module solves three problems which apply to VM migrations in a shared-nothi
 
 The module works around those problems by introducing additional checks and correction actions to the migration process. Also, if something happens during a migration, it retries again, several times.
 
+## Quick start
+
+1. Install the module from the [PowerShell Gallery](https://powershellgallery.com):
+
+```powershell
+Install-Module HVVMReliableMigration
+Import-Module HVVMReliableMigration
+```
+
+2. Use a new function `Move-VMReliably` to move VMs between Hyper-V hosts!
+
+3. You might want to tune various module parameters using module-wide variables in `Config.ps1` as described below.
+
 ## Exported functions
+
 * [Move-VMReliably](docs/Move-VMReliably.md)
 
 ## Module-wide variables
+
 There are several variables defined in the .psm1-file, which are used by the module's functions as default values for parameters:
 
 `[int]$ModuleWideMigrationMaxAttempts` - default value for **Move-VMReliably**'s `-MaxAttempts` parameter
@@ -28,7 +43,9 @@ There are several variables defined in the .psm1-file, which are used by the mod
 `[System.TimeSpan]$ModuleWideBackupThreshold` - default value for **Move-VMReliably**'s `-BackupThreshold` parameter
 
 ## Loading variables from an external source
+
 All module-wide variables can be redefined with a `Config.ps1` file, located in the module's root folder. Just put variable definitions in there as you would do with any other PowerShell script. You may find an example of a config file `Config-Example.ps1` in the module's root folder.
 
 ## Limitations
+
 * Only one-to-one source-destination host mapping is supported.
