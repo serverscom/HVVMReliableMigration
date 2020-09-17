@@ -1,6 +1,6 @@
 # HVVMReliableMigration
 
-This module solves three problems which apply to VM migrations in a shared-nothing Hyper-V infrastructure (Azure-like):
+This module solves three problems which apply to VM migrations in a shared-nothing Hyper-V infrastructure:
 
 1. Live-migration limit.
     When you try to live-migrate a number of VMs which exceeds the hosts' live-migration limit, you have to manually watch running migration jobs and queue new ones as soon as a migration slot becomes available. This module automatically watches available migration slots and queues machines for migration.
@@ -48,4 +48,4 @@ All module-wide variables can be redefined with a `Config.ps1` file, located in 
 
 ## Limitations
 
-* Only one-to-one source-destination host mapping is supported.
+* Only one-to-one source-destination host mapping is supported, i.e. you cannot move VMs from several source hosts to a single destination host in one command.
