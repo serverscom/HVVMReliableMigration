@@ -295,26 +295,28 @@ function Move-VMReliably {
                                                     $HostName,
                                                     $Path,
                                                     $PutInASubfolder,
-                                                    $Definition,
                                                     $DebugPreference,
                                                     $ErrorActionPreference
                                                 )
 
-                                                Set-Item -Path 'Function:\Move-HVVM' -Value $Definition
+                                                # Why do I load functions from disk here, instead of passing them through parameters from the parent function?
+                                                # Because in that case I got bizzare errors about cmdlets not being found, like "System.Management.Automation.CommandNotFoundException: The term 'Write-Debug' is not recognized as the name of a cmdlet, function, script file, or operable program." or "The term 'Get-CimInstance' is not recognized as the name of a cmdlet, function, script file, or operable program."
+                                                # It looks like some buffer overflows when I did that, so that's why I load functions from disk here.
+                                                $ModulePath = (Get-Module -Name 'HVVMReliableMigration' -ListAvailable).ModuleBase
+                                                foreach ($FunctionType in @('Private', 'Public')) {
+                                                    $FunctionPath = Join-Path -Path $ModulePath -ChildPath ('{0}\*.ps1' -f $FunctionType)
+                                                    if (Test-Path -Path $FunctionPath) {
+                                                        Get-ChildItem -Path $FunctionPath -Recurse | ForEach-Object -Process {. $_.FullName}
+                                                    }
+                                                }
                                                 Move-HVVM -VM $VM -HostName $HostName -Path $Path -PutInASubfolder:$PutInASubfolder
                                             }
                                             Write-Debug -Message ('$ScriptBlock = ''{{{0}}}''' -f $ScriptBlock)
 
-                                            Write-Debug -Message '$MoveFunction = Get-Item -Path ''Function:\Move-HVVM'''
-                                            $MoveFunction = Get-Item -Path 'Function:\Move-HVVM'
-                                            Write-Debug -Message ('$MoveFunction: ''{0}''' -f $MoveFunction)
-                                            $MoveFunctionDefinition = $MoveFunction.Definition
-                                            Write-Debug -Message ('$MoveFunctionDefinition: ''{0}''' -f $MoveFunctionDefinition)
-
                                             Write-Verbose -Message ('Trying to live-migrate a VM {0} from {1} to {2}' -f $VMItem.Id, $VMItem.ComputerName, $DestinationHostName)
                                             try {
-                                                Write-Debug -Message ('$null = Start-ThreadJob -Name ''{0}'' -ScriptBlock $ScriptBlock -ArgumentList ($VMItem, ''{1}'', ''{2}'', ${3}, $MoveFunctionDefinition, ''{4}'', ''5'')' -f $JobName, $DestinationHostName, $Path, $PutInASubfolder, $DebugPreference, $ErrorActionPreference)
-                                                $null = Start-ThreadJob -Name $JobName -ScriptBlock $ScriptBlock -ArgumentList ($VMItem, $DestinationHostName, $Path, $PutInASubfolder, $MoveFunctionDefinition, $DebugPreference, $ErrorActionPreference)
+                                                Write-Debug -Message ('$null = Start-ThreadJob -Name ''{0}'' -ScriptBlock $ScriptBlock -ArgumentList ($VMItem, ''{1}'', ''{2}'', ${3}, ''{4}'', ''5'')' -f $JobName, $DestinationHostName, $Path, $PutInASubfolder, $DebugPreference, $ErrorActionPreference)
+                                                $null = Start-ThreadJob -Name $JobName -ScriptBlock $ScriptBlock -ArgumentList ($VMItem, $DestinationHostName, $Path, $PutInASubfolder, $DebugPreference, $ErrorActionPreference)
                                             }
                                             catch {
                                                 Write-Debug -Message ($_)

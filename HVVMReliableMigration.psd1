@@ -1,12 +1,12 @@
 @{
     RootModule         = 'HVVMReliableMigration.psm1'
-    ModuleVersion      = '1.0.0'
+    ModuleVersion      = '1.1.0'
     GUID               = '901d64bc-c223-4546-9040-c697334fca4b'
     Author             = 'Kirill Nikolaev'
     CompanyName        = 'Fozzy Inc.'
     Copyright          = '(c) 2020 Fozzy Inc. All rights reserved.'
     PowerShellVersion  = '5.1'
-    Description        = 'Solves 2 problems which you most certainly bump into, when migrating VMs in a shared-nothing Hyper-V environment.'
+    Description        = 'Solves 3 problems which you most certainly bump into, when migrating VMs in a shared-nothing Hyper-V environment: live-migration limit, backing up VMs cannot be migrated, clutter of empty folders on the source server.'
     RequiredModules    = @(
         'Hyper-V'
         'ThreadJob'
