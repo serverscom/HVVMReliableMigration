@@ -14,6 +14,9 @@ function Move-VMReliably {
         [string]$Path,
         [Parameter(ParameterSetName = 'ByHost')]
         [Parameter(ParameterSetName = 'ByVM')]
+        [switch]$ForceSingleDestinationPath = $ModuleWideForceSingleDestinationPath,
+        [Parameter(ParameterSetName = 'ByHost')]
+        [Parameter(ParameterSetName = 'ByVM')]
         [ValidateRange(0, [int]::MaxValue)]
         [int]$Timeout = $ModuleWideMigrationTimeout,
         [Parameter(ParameterSetName = 'ByHost')]
@@ -63,6 +66,7 @@ function Move-VMReliably {
         Write-Debug -Message ('$VM: ''{0}''' -f [string]$VM.Name)
         Write-Debug -Message ('$DestinationVMHost: ''{0}''' -f [string]$DestinationVMHost)
         Write-Debug -Message ('$Path = ''{0}''' -f $Path)
+        Write-Debug -Message ('$ForceSingleDestinationPath = ${0}' -f $ForceSingleDestinationPath)
         Write-Debug -Message ('$Timeout = {0}' -f $Timeout)
         Write-Debug -Message ('$MaxAttempts = {0}' -f $MaxAttempts)
         Write-Debug -Message ('$MaxParallelMigrations = {0}' -f $MaxParallelMigrations)
@@ -294,6 +298,7 @@ function Move-VMReliably {
                                                     $VM,
                                                     $HostName,
                                                     $Path,
+                                                    $ForceSingleDestinationPath,
                                                     $PutInASubfolder,
                                                     $DebugPreference,
                                                     $ErrorActionPreference
@@ -309,14 +314,14 @@ function Move-VMReliably {
                                                         Get-ChildItem -Path $FunctionPath -Recurse | ForEach-Object -Process {. $_.FullName}
                                                     }
                                                 }
-                                                Move-HVVM -VM $VM -HostName $HostName -Path $Path -PutInASubfolder:$PutInASubfolder
+                                                Move-HVVM -VM $VM -HostName $HostName -Path $Path -ForceSingleDestinationPath:$ForceSingleDestinationPath -PutInASubfolder:$PutInASubfolder
                                             }
                                             Write-Debug -Message ('$ScriptBlock = ''{{{0}}}''' -f $ScriptBlock)
 
                                             Write-Verbose -Message ('Trying to live-migrate a VM {0} from {1} to {2}' -f $VMItem.Id, $VMItem.ComputerName, $DestinationHostName)
                                             try {
-                                                Write-Debug -Message ('$null = Start-ThreadJob -Name ''{0}'' -ScriptBlock $ScriptBlock -ArgumentList ($VMItem, ''{1}'', ''{2}'', ${3}, ''{4}'', ''5'')' -f $JobName, $DestinationHostName, $Path, $PutInASubfolder, $DebugPreference, $ErrorActionPreference)
-                                                $null = Start-ThreadJob -Name $JobName -ScriptBlock $ScriptBlock -ArgumentList ($VMItem, $DestinationHostName, $Path, $PutInASubfolder, $DebugPreference, $ErrorActionPreference)
+                                                Write-Debug -Message ('$null = Start-ThreadJob -Name ''{0}'' -ScriptBlock $ScriptBlock -ArgumentList ($VMItem, ''{1}'', ''{2}'', ${3}, ${4}, ''{4}'', ''5'')' -f $JobName, $DestinationHostName, $Path, $ForceSingleDestinationPath, $PutInASubfolder, $DebugPreference, $ErrorActionPreference)
+                                                $null = Start-ThreadJob -Name $JobName -ScriptBlock $ScriptBlock -ArgumentList ($VMItem, $DestinationHostName, $Path, $ForceSingleDestinationPath, $PutInASubfolder, $DebugPreference, $ErrorActionPreference)
                                             }
                                             catch {
                                                 Write-Debug -Message ($_)
@@ -425,8 +430,8 @@ function Move-VMReliably {
                                                     $null = $VMMigrationRetryInfo.Add($VMItem.Id)
                                                     Write-Debug -Message ('$VMMigrationRetryInfo: ''{0}''' -f [string]$VMMigrationRetryInfo)
                                                     Write-Verbose -Message ('Trying to migrate a powered-down VM {0} from {1} to {2}' -f $VMItem.Id, $VMItem.ComputerName, $DestinationHostName)
-                                                    Write-Debug -Message ('Move-HVVM -VM $VMItem -HostName ''{0}'' -Path ''{1}'' -PutInASubfolder:${2}' -f $DestinationHostName, $Path, $PutInASubfolder)
-                                                    Move-HVVM -VM $VMItem -HostName $DestinationHostName -Path $Path -PutInASubfolder:$PutInASubfolder
+                                                    Write-Debug -Message ('Move-HVVM -VM $VMItem -HostName ''{0}'' -Path ''{1}'' -ForceSingleDestinationPath:${2} -PutInASubfolder:${3} ' -f $DestinationHostName, $Path, $ForceSingleDestinationPath, $PutInASubfolder)
+                                                    Move-HVVM -VM $VMItem -HostName $DestinationHostName -Path $Path -ForceSingleDestinationPath:$ForceSingleDestinationPath -PutInASubfolder:$PutInASubfolder
                                                     Write-Debug -Message '$LastVMWasPoweredDown = $true'
                                                     $LastVMWasPoweredDown = $true
                                                     Write-Debug -Message ('$LastVMWasPoweredDown = ${0}' -f $LastVMWasPoweredDown)

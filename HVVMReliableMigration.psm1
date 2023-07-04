@@ -6,6 +6,7 @@ $ModulePath = $PSScriptRoot
 [int]$ModuleWideMigrationMaxAttempts = 3
 [int]$ModuleWideMigrationJobGetTimeout = 10
 [int]$ModuleWideMigrationJobGetMaxAttempts = 3
+[bool]$ModuleWideForceSingleDestinationPath = $false
 [System.TimeSpan]$ModuleWideBackupThreshold = New-Object -TypeName 'System.TimeSpan' -ArgumentList @(1, 0, 0)
 
 foreach ($FunctionType in @('Private', 'Public')) {
