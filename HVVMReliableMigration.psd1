@@ -1,6 +1,6 @@
 @{
     RootModule         = 'HVVMReliableMigration.psm1'
-    ModuleVersion      = '1.1.0'
+    ModuleVersion      = '1.2.0'
     GUID               = '901d64bc-c223-4546-9040-c697334fca4b'
     Author             = 'Kirill Nikolaev'
     CompanyName        = 'Fozzy Inc.'

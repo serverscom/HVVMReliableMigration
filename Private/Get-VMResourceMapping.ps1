@@ -71,6 +71,7 @@ function Get-VMResourceMapping {
         Write-Debug -Message ('$OtherPaths: ''{0}''' -f [string]$OtherPaths)
 
         $Result = @{
+            HardDrivePaths = $HardDrivePaths
             ConfigPath = $ConfigPath
             VMPathID = $VMPathID
             VMPath = $VMPath
