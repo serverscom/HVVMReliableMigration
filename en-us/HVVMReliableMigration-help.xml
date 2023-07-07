@@ -144,6 +144,17 @@
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>PreserveSourceVhdPathDriveLetter</maml:name>
+          <maml:Description>
+            <maml:para>Forces the module to place virtual hard disks of the migrated virtual machines to the partitions with the same drive letters as on the source host, if those partitions exist. The full destination paths of the virtual hard disks are defined by the subdirectories specified in the Path parameter and the behavior of the (`-PutInASubfoler` parameter).</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>MigrationJobGetMaxAttempts</maml:name>
           <maml:Description>
             <maml:para>When an asynchronous migration of a VM starts, it needs some time before appearing in the list of jobs. Before proceeding to the next VM, the function tries to find the migration job it has just created in the list. This parameter specifies the maximum number of such attempts.</maml:para>
@@ -303,6 +314,17 @@
           <maml:name>PutInASubfolder</maml:name>
           <maml:Description>
             <maml:para>When used, places virtual machines in subfolders, named as VMs themselves, therefore mimicking SCVMM behavior. Requires access to WinRM on the target computer and access to the Win32_Directory WMI class.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>PreserveSourceVhdPathDriveLetter</maml:name>
+          <maml:Description>
+            <maml:para>Forces the module to place virtual hard disks of the migrated virtual machines to the partitions with the same drive letters as on the source host, if those partitions exist. The full destination paths of the virtual hard disks are defined by the subdirectories specified in the Path parameter and the behavior of the (`-PutInASubfoler` parameter).</maml:para>
           </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
@@ -494,6 +516,18 @@
         <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>PreserveSourceVhdPathDriveLetter</maml:name>
+        <maml:Description>
+          <maml:para>Forces the module to place virtual hard disks of the migrated virtual machines to the partitions with the same drive letters as on the source host, if those partitions exist. The full destination paths of the virtual hard disks are defined by the subdirectories specified in the Path parameter and the behavior of the (`-PutInASubfoler` parameter).</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>MigrationJobGetMaxAttempts</maml:name>
         <maml:Description>
           <maml:para>When an asynchronous migration of a VM starts, it needs some time before appearing in the list of jobs. Before proceeding to the next VM, the function tries to find the migration job it has just created in the list. This parameter specifies the maximum number of such attempts.</maml:para>
@@ -574,9 +608,10 @@ Move-VMReliably -VM $VMs -DestinationVMHost (Get-VMHost SRVHV02) -Path 'D:\Virtu
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>Move-VMReliably -SourceVMHost (Get-VMHost SRVHV01) -DestinationVMHost (Get-VMHost SRVHV02) -Path 'D:\VirtualMachines'</dev:code>
+        <dev:code>Move-VMReliably -SourceVMHost (Get-VMHost SRVHV01) -DestinationVMHost (Get-VMHost SRVHV02) -Path 'D:\VirtualMachines' -PreserveSourceVhdPathDriveLetter -PutInASubfolder</dev:code>
         <dev:remarks>
-          <maml:para>Migrates all virtual machines from a Hyper-V host SRVHV01 to SRVHV02, placing them into the "D:\VirtualMachines" folder at SRVHV02.</maml:para>
+          <maml:para>Migrates all virtual machines from a Hyper-V host SRVHV01 to SRVHV02, placing each one to the separate subfolder "D:\Virtual Machines\%VirtualMachineName%" at SRVHV02.
+VHDs attached to the virtual machine will be placed on the target host according to the hypervisor's volume letters of their source paths: VM's disks "C:\Hyper-V\VM1\Disk1.vhdx", "D:\Hyper-V\VM1\Disk2.vhdx" from source hypervisor will be moved to "C:\VirtualMachines\%VirtualMachineName%\Disk1.vhdx" and "D:\VirtualMachines\%VirtualMachineName%\Disk2.vhdx" on the destination host.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
