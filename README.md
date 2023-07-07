@@ -40,6 +40,8 @@ There are several variables defined in the .psm1-file, which are used by the mod
 
 `[int]$ModuleWideMigrationJobGetMaxAttempts` - default value for **Move-VMReliably**'s `-MigrationJobGetMaxAttempts` parameter
 
+`[bool]$ModuleWidePreserveSourceVhdPathDriveLetter` - default value for **Move-VMReliably**'s `-PreserveSourceVhdPathDriveLetter` parameter
+
 `[System.TimeSpan]$ModuleWideBackupThreshold` - default value for **Move-VMReliably**'s `-BackupThreshold` parameter
 
 ## Loading variables from an external source

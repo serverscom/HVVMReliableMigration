@@ -6,5 +6,5 @@
 [int]$ModuleWideMigrationMaxAttempts = 3
 [int]$ModuleWideMigrationJobGetTimeout = 10
 [int]$ModuleWideMigrationJobGetMaxAttempts = 3
-[bool]$ModuleWideForceSingleDestinationPath = $false
+[bool]$ModuleWidePreserveSourceVhdPathDriveLetter = $false
 [System.TimeSpan]$ModuleWideBackupThreshold = New-Object -TypeName 'System.TimeSpan' -ArgumentList @(1, 0, 0)
