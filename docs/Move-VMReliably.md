@@ -37,10 +37,11 @@ Migrates all virtual machines, which name starts with "SRVSP*", from a Hyper-V h
 
 ### Example 2
 ```powershell
-Move-VMReliably -SourceVMHost (Get-VMHost SRVHV01) -DestinationVMHost (Get-VMHost SRVHV02) -Path 'D:\VirtualMachines'
+Move-VMReliably -SourceVMHost (Get-VMHost SRVHV01) -DestinationVMHost (Get-VMHost SRVHV02) -Path 'D:\VirtualMachines' -PreserveSourceVhdPathDriveLetter -PutInASubfolder
 ```
 
-Migrates all virtual machines from a Hyper-V host SRVHV01 to SRVHV02, placing them into the "D:\VirtualMachines" folder at SRVHV02.
+Migrates all virtual machines from a Hyper-V host SRVHV01 to SRVHV02, placing each one to the separate subfolder "D:\Virtual Machines\\\<Virtual Machine Name>" at SRVHV02. 
+VHDs attached to the virtual machine will be placed on the target host according to the hypervisor's volume letters of their source paths: VM's disks "C:\Hyper-V\VM1\Disk1.vhdx", "D:\Hyper-V\VM1\Disk2.vhdx" from source hypervisor will be moved to "C:\VirtualMachines\\\<VirtualMachineName>\Disk1.vhdx".vhdx and "D:\VirtualMachines\\\<VirtualMachineName>\Disk2.vhdx" on the destination host.
 
 ### Example 3
 ```powershell
@@ -111,6 +112,7 @@ Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
+
 
 ### -MaxAttempts
 If a migration of a VM fails, the function will try again. This parameter specifies the maximum number of attempts.
@@ -223,6 +225,21 @@ Requires access to WinRM on the target computer and access to the Win32_Director
 
 ```yaml
 Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PreserveSourceVhdPathDriveLetter 
+Forces the module to place virtual hard disks of the migrated virtual machines to the partitions with the same drive letters as on the source host, if those partitions exist. The full destination paths of the virtual hard disks are defined by the subdirectories specified in the Path parameter and the behavior of the "PutInASubfoler" parameter.
+
+```yaml
+Type: Switch
 Parameter Sets: (All)
 Aliases:
 
